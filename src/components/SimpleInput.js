@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
+import useInput from '../hook/use-input';
 
 const SimpleInput = (props) => {
-    const [enteredName, setEnterName] = useState('');
-    const [enteredNameTouched, setEnterNameTouched] = useState(false);
-    // const [formIsValid, setFormIsValid] = useState(false);
+    const {
+        value: enteredName,
+        isValid: enteredNameIsValid,
+        hasError: nameErrorInput,
+        valueChangeHandler: nameInputChangeHandler,
+        inputBlurHandler: nameInputBlurHandler,
+        reset: resetNameInput,
+    } = useInput((value) => value.trim() !== '');
 
-    const enteredNameIsValid = enteredName.trim() !== '';
-    const enteredInputInvalid = !enteredNameIsValid && enteredNameTouched;
     let formIsValid = false;
 
     if (enteredNameIsValid) {
@@ -20,27 +24,16 @@ const SimpleInput = (props) => {
     //     }
     // });
 
-    const nameInputChangeHandler = (event) => {
-        setEnterName(event.target.value);
-    };
-
-    const nameInputBlurHandler = (e) => {
-        setEnterNameTouched(true);
-    };
-
     const formSubmitDefault = (e) => {
         e.preventDefault();
-
-        setEnterNameTouched(true);
 
         if (!enteredNameIsValid) {
             return;
         }
-        setEnterName('');
-        setEnterNameTouched(false);
+        resetNameInput();
     };
 
-    const classForm = enteredInputInvalid ? 'form-control invalid' : 'form-control';
+    const classForm = nameErrorInput ? 'form-control invalid' : 'form-control';
 
     return (
         <form onSubmit={formSubmitDefault}>
@@ -53,10 +46,10 @@ const SimpleInput = (props) => {
                     onBlur={nameInputBlurHandler}
                     value={enteredName}
                 />
-                {enteredInputInvalid && <p>Enter valid name</p>}
+                {nameErrorInput && <p>Enter valid name</p>}
             </div>
             <div className="form-actions">
-                <button disabled={!formIsValid}>Submit</button>
+                <button disabled={nameErrorInput}>Submit</button>
             </div>
         </form>
     );
