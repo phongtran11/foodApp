@@ -1,49 +1,32 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-import Cart from './components/Cart/Cart';
-import Layout from './components/Layout/Layout';
-import Products from './components/Shop/Products';
-import Notification from './components/UI/Notification';
-
-import { sendCartData, fetchCartData } from './store/cart-actions';
-
-let isInitial = true;
+import AllQuotes from './pages/AllQuotes';
+import QuoteDetail from './pages/QuoteDetail';
+import NewQuote from './pages/NewQuote';
+import Layout from './components/layout/Layout';
+import NotFound from './pages/NotFound';
 
 function App() {
-    const cartInvisible = useSelector((state) => state.UI.cartInvisible);
-    const cart = useSelector((state) => state.cart);
-    const notification = useSelector((state) => state.UI.notification);
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(fetchCartData());
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (isInitial) {
-            isInitial = false;
-            return;
-        }
-
-        if (cart.change) {
-            dispatch(sendCartData(cart));
-        }
-    }, [cart, dispatch]);
-
     return (
         <>
-            {notification && (
-                <Notification
-                    status={notification.status}
-                    title={notification.title}
-                    message={notification.message}
-                />
-            )}
             <Layout>
-                {cartInvisible && <Cart />}
-                <Products />
+                <Switch>
+                    <Route exact path="/">
+                        <Redirect to="/quotes" />
+                    </Route>
+                    <Route exact path="/quotes">
+                        <AllQuotes />
+                    </Route>
+                    <Route path="/quotes/:quoteId">
+                        <QuoteDetail />
+                    </Route>
+                    <Route path="/new-quote">
+                        <NewQuote />
+                    </Route>
+                    <Route path="*">
+                        <NotFound />
+                    </Route>
+                </Switch>
             </Layout>
         </>
     );
