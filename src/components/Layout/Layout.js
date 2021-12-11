@@ -1,15 +1,14 @@
-import React from 'react';
+import { Fragment } from 'react';
 
-import classes from './Layout.module.css';
 import MainNavigation from './MainNavigation';
 
-function Layout(props) {
-    return (
-        <>
-            <MainNavigation />
-            <main className={classes.main}>{props.children}</main>
-        </>
-    );
-}
+const Layout = (props) => {
+  return (
+    <Fragment>
+      <MainNavigation />
+      <main>{props.children}</main>
+    </Fragment>
+  );
+};
 
 export default Layout;
