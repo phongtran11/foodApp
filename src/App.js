@@ -1,33 +1,35 @@
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { useContext } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 
-import Layout from './components/Layout/Layout';
-import UserProfile from './components/Profile/UserProfile';
-import AuthPage from './pages/AuthPage';
-import HomePage from './pages/HomePage';
-import AuthContext from './store/auth-context';
+import Users from './user/pages/Users';
+import NewPlace from './places/pages/NewPlace';
+import MainNavigation from './shared/Navigation/MainNavigation';
+import UserPlaces from './places/pages/UserPlaces';
+import UpdatePlace from './places/pages/UpdatePlace';
 
-function App() {
-    const { isLoggedIn } = useContext(AuthContext);
-
+const App = () => {
     return (
-        <Layout>
-            <Switch>
-                <Route path="/" exact>
-                    <HomePage />
-                </Route>
-                {!isLoggedIn && (
-                    <Route path="/auth">
-                        <AuthPage />
+        <Router>
+            <MainNavigation />
+            <main>
+                <Switch>
+                    <Route exact path="/">
+                        <Users />
                     </Route>
-                )}
-                <Route path="/profile">{isLoggedIn && <UserProfile />}</Route>
-                <Route path="*">
+                    <Route path="/:userId/places">
+                        <UserPlaces />
+                    </Route>
+                    <Route exact path="/places/new">
+                        <NewPlace />
+                    </Route>
+                    <Route path="/places/:placeId">
+                        <UpdatePlace />
+                    </Route>
                     <Redirect to="/" />
-                </Route>
-            </Switch>
-        </Layout>
+                </Switch>
+            </main>
+        </Router>
     );
-}
+};
 
 export default App;
